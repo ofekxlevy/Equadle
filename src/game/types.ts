@@ -4,10 +4,9 @@
 export const EQUATION_LENGTH = 10;
 
 /**
- * All tokens that can appear in an equation.
- * Note: '^2' is treated as a single tile.
+ * Digits that can appear in an equation.
  */
-export const ALLOWED_TOKENS = [
+export const DIGIT_TOKENS = [
   '0',
   '1',
   '2',
@@ -18,15 +17,43 @@ export const ALLOWED_TOKENS = [
   '7',
   '8',
   '9',
+] as const;
+
+/**
+ * Operators that can appear in an equation.
+ * Note: '^2' is treated as a single tile.
+ */
+export const OPERATOR_TOKENS = [
   '+',
   '-',
   '*',
   '/',
+  '^2',
+] as const;
+
+/**
+ * Non-operator tokens that can appear in an equation.
+ */
+export const SPECIAL_TOKENS = [
   '(',
   ')',
-  '^2',
   '=',
 ] as const;
+
+/**
+ * All tokens that can appear in an equation.
+ */
+export const ALLOWED_TOKENS = [
+  ...DIGIT_TOKENS,
+  ...OPERATOR_TOKENS,
+  ...SPECIAL_TOKENS,
+] as const;
+
+export type DigitToken = (typeof DIGIT_TOKENS)[number];
+
+export type OperatorToken = (typeof OPERATOR_TOKENS)[number];
+
+export type SpecialToken = (typeof SPECIAL_TOKENS)[number];
 
 export type Token = (typeof ALLOWED_TOKENS)[number];
 
