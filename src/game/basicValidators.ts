@@ -22,16 +22,16 @@ import type { Token } from './types';
  *     number or parenthesized expression.
  */
 
-type ValidationResult =
+export type ValidationResult =
     | { isValid: true }
     | { isValid: false; reason: string }
 ;
 
-function makeValidResult(): ValidationResult {
+export function makeValidResult(): ValidationResult {
     return { isValid: true };
 }
 
-function makeInvalidResult(reason: string): ValidationResult {
+export function makeInvalidResult(reason: string): ValidationResult {
     return { isValid: false, reason };
 }
 
