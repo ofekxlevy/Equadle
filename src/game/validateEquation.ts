@@ -97,4 +97,38 @@ function validateRightSideNoLeadingZero(equation: Token[]): ValidationResult {
         : makeValidResult();
 }
 
+function getNumberTokens(tokens: Token[], startIndex: number): { numberTokens: Token[]; nextIndex: number } {
+    const numberTokens: Token[] = [];
+    let index = startIndex;
+    while (index < tokens.length && isDigit(tokens[index])) {
+        numberTokens.push(tokens[index]);
+        index++;
+    }
+    return { numberTokens, nextIndex: index };
+}
+
+function validateLeftSideNumbers(equation: Token[]): ValidationResult {
+    const leftSide = getLeftSide(equation);
+    let index = 0;
+    while (index < leftSide.length) {
+        if (!isDigit(leftSide[index])) {
+            index++;
+            continue;
+        }
+
+        const { numberTokens, nextIndex } = getNumberTokens(leftSide, index);
+        const isStandaloneZero = numberTokens.length === 1 && numberTokens[0] === '0';
+        if (isStandaloneZero) {
+            return makeInvalidResult('Left side cannot contain standalone 0.');
+        }
+
+        const hasLeadingZero = numberTokens.length > 1 && numberTokens[0] === '0';
+        if (hasLeadingZero) {
+            return makeInvalidResult('Left side numbers cannot have leading zeros.');
+        }
+
+        index = nextIndex;
+    }
+    return makeValidResult();
+}
 
