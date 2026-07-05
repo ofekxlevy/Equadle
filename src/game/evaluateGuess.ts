@@ -1,28 +1,27 @@
-import type { Tile, TileState } from './types';
+import type { Tile, TileState, Token } from './types';
 
-function getTileState(secret: string, char: string, index: number): TileState {
-    if (secret[index] === char) 
+function getTileState(secret: Token[], token: Token, index: number): TileState {
+    if (secret[index] === token) 
         return 'correct';
-    else if (secret.includes(char)) 
+    if (secret.includes(token)) 
         return 'present';
-    else 
-        return 'absent';
+    return 'absent';
 }
 
 /**
  * Compares a guessed equation with the secret equation and returns
- * the tile state for each character in the guess.
+ * the tile state for each token in the guess.
  *
  * A tile is marked as:
- * - 'correct' if the character is in the exact same position.
- * - 'present' if the character exists in the secret equation but in another position.
- * - 'absent' if the character does not exist in the secret equation.
+ * - 'correct' if the token is in the exact same position.
+ * - 'present' if the token exists in the secret equation but in another position.
+ * - 'absent' if the token does not exist in the secret equation.
  *
- * Note: this simple implementation does not fully handle duplicate characters yet.
+ * Note: this simple implementation does not fully handle duplicate tokens yet.
  */
-export function evaluateGuess(secret: string, guess: string): Tile[] {
-    return guess.split('').map((char, index) => ({
-        value: char,
-        state: getTileState(secret, char, index),
+export function evaluateGuess(secret: Token[], guess: Token[]): Tile[] {
+    return guess.map((token, index) => ({
+        value: token,
+        state: getTileState(secret, token, index),
     }));
 }
