@@ -67,7 +67,7 @@ function getLeftSide(equation: Token[]): Token[] {
 
 function getRightSide(equation: Token[]): Token[] {
     return equation.slice(getEqualsSignIndex(equation) + 1);
-}   
+}
 
 function isDigit(token: Token): boolean {
     return DIGIT_TOKENS.some((digit) => digit === token);
