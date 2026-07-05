@@ -1,5 +1,7 @@
 import { ALLOWED_TOKENS, DIGIT_TOKENS, EQUATION_LENGTH } from './types';
 import type { Token } from './types';
+import { makeValidResult, makeInvalidResult} from './validationResult';
+import type { ValidationResult } from './validationResult';
 
 /**
  * Equation validation rules:
@@ -22,18 +24,6 @@ import type { Token } from './types';
  *     number or parenthesized expression.
  */
 
-export type ValidationResult =
-    | { isValid: true }
-    | { isValid: false; reason: string }
-;
-
-export function makeValidResult(): ValidationResult {
-    return { isValid: true };
-}
-
-export function makeInvalidResult(reason: string): ValidationResult {
-    return { isValid: false, reason };
-}
 
 type EquationValidator = (equation: Token[]) => ValidationResult;
 
