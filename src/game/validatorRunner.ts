@@ -1,4 +1,4 @@
-import type {ValidationResult} from './validationResult';
+import type {ValidationResult} from './result';
 
 export type Validator<T> = (value: T) => ValidationResult;
 

@@ -1,7 +1,7 @@
 import { ALLOWED_TOKENS, DIGIT_TOKENS, EQUATION_LENGTH } from './types';
 import type { Token } from './types';
-import { makeValidResult, makeInvalidResult} from './validationResult';
-import type { ValidationResult } from './validationResult';
+import { makeValidResult, makeInvalidResult} from './result';
+import type { ValidationResult } from './result';
 import type { Validator } from './validatorRunner';
 import { runValidators } from './validatorRunner';
 
