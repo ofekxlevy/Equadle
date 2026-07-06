@@ -1,7 +1,3 @@
-import type { Token } from './types';
-import { DIGIT_TOKENS } from './types';
-import { makeInvalidEvaluationResult, makeValidEvaluationResult } from './result';
-import type { EvaluationResult } from './result';
 
 /**
  * Equadle expression language
@@ -111,3 +107,156 @@ import type { EvaluationResult } from './result';
  * - Multi-digit numbers cannot start with 0.
  * - On the left side, 0 cannot appear as a standalone number.
  */
+
+// ===========================================================
+
+// AST type models
+
+export type Equation = {
+    tag: 'Equation';
+    exp: Exp;
+    expected: number;
+};
+
+export type AtomicExp = NumExp;
+
+export type CompoundExp =
+    | AddExp
+    | SubExp
+    | MulExp
+    | DivExp
+    | SquareExp
+;
+
+export type Exp = AtomicExp | CompoundExp;
+
+export type NumExp = {
+    tag: 'NumExp';
+    value: number;
+};
+
+export type AddExp = {
+    tag: 'AddExp';
+    left: Exp;
+    right: Exp;
+};
+
+export type SubExp = {
+    tag: 'SubExp';
+    left: Exp;
+    right: Exp;
+};
+
+export type MulExp = {
+    tag: 'MulExp';
+    left: Exp;
+    right: Exp;
+};
+
+export type DivExp = {
+    tag: 'DivExp';
+    left: Exp;
+    right: Exp;
+};
+
+export type SquareExp = {
+    tag: 'SquareExp';
+    exp: Exp;
+};
+
+// ===========================================================
+
+// Type value constructors for disjoint types
+
+export const makeEquation = (exp: Exp, expected: number): Equation => ({
+    tag: 'Equation',
+    exp,
+    expected,
+});
+
+export const makeNumExp = (value: number): NumExp => ({
+    tag: 'NumExp',
+    value,
+});
+
+export const makeAddExp = (left: Exp, right: Exp): AddExp => ({
+    tag: 'AddExp',
+    left,
+    right,
+});
+
+export const makeSubExp = (left: Exp, right: Exp): SubExp => ({
+    tag: 'SubExp',
+    left,
+    right,
+});
+
+export const makeMulExp = (left: Exp, right: Exp): MulExp => ({
+    tag: 'MulExp',
+    left,
+    right,
+});
+
+export const makeDivExp = (left: Exp, right: Exp): DivExp => ({
+    tag: 'DivExp',
+    left,
+    right,
+});
+
+export const makeSquareExp = (exp: Exp): SquareExp => ({
+    tag: 'SquareExp',
+    exp,
+});
+
+// ===========================================================
+
+// Type predicates for disjoint types
+
+export const isEquation = (x: unknown): x is Equation => 
+    isTagged(x, 'Equation');
+
+export const isNumExp = (x: unknown): x is NumExp =>
+    isTagged(x, 'NumExp');
+
+export const isAddExp = (x: unknown): x is AddExp =>
+    isTagged(x, 'AddExp');
+
+export const isSubExp = (x: unknown): x is SubExp =>
+    isTagged(x, 'SubExp');
+
+export const isMulExp = (x: unknown): x is MulExp =>
+    isTagged(x, 'MulExp');
+
+export const isDivExp = (x: unknown): x is DivExp =>
+    isTagged(x, 'DivExp');
+
+export const isSquareExp = (x: unknown): x is SquareExp =>
+    isTagged(x, 'SquareExp');
+
+// ===========================================================
+
+// Type predicates for type unions
+
+export const isAtomicExp = (x: unknown): x is AtomicExp =>
+    isNumExp(x);
+
+export const isCompoundExp = (x: unknown): x is CompoundExp =>
+    isAddExp(x) ||
+    isSubExp(x) ||
+    isMulExp(x) ||
+    isDivExp(x) ||
+    isSquareExp(x);
+
+export const isExp = (x: unknown): x is Exp =>
+    isAtomicExp(x) || isCompoundExp(x);
+
+// ===========================================================
+
+// Helpers
+
+function isTagged(x: unknown, tag: string): x is { tag: string } {
+    return typeof x === 'object' &&
+        x !== null &&
+        'tag' in x &&
+        (x as { tag: unknown }).tag === tag;
+}
