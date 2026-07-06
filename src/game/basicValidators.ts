@@ -2,6 +2,8 @@ import { ALLOWED_TOKENS, DIGIT_TOKENS, EQUATION_LENGTH } from './types';
 import type { Token } from './types';
 import { makeValidResult, makeInvalidResult} from './validationResult';
 import type { ValidationResult } from './validationResult';
+import type { Validator } from './validatorRunner';
+import { runValidators } from './validatorRunner';
 
 /**
  * Equation validation rules:
@@ -25,7 +27,23 @@ import type { ValidationResult } from './validationResult';
  */
 
 
-type EquationValidator = (equation: Token[]) => ValidationResult;
+type EquationValidator = Validator<Token[]>;
+
+const BASIC_VALIDATORS: EquationValidator[] = [
+    validateLength,
+    validateTokens,
+    validateEqualsSign,
+    validateNonEmptySides,
+    validateRightSideIsNumber,
+    validateRightSideNoLeadingZero,
+    validateLeftSideNumbers,
+];
+
+export function validateBasicEquationStructure(equation: Token[]): ValidationResult {
+    return runValidators(BASIC_VALIDATORS, equation);
+}
+
+// ===== Basic validators =====
 
 function validateLength(equation: Token[]): ValidationResult {
     return equation.length === EQUATION_LENGTH
