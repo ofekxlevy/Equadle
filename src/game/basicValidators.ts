@@ -1,5 +1,5 @@
-import { ALLOWED_TOKENS, DIGIT_TOKENS, EQUATION_LENGTH } from './types';
-import type { DigitToken, Token } from './types';
+import { ALLOWED_TOKENS, EQUATION_LENGTH } from './types';
+import type { Token } from './types';
 import { isDigit } from './types';
 import { makeValidResult, makeInvalidResult} from './result';
 import type { ValidationResult } from './result';
