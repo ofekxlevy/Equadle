@@ -69,3 +69,7 @@ export type Tile = {
   value: Token | '';
   state: TileState;
 };
+
+export function isDigit(token: Token): token is DigitToken {
+    return DIGIT_TOKENS.some((digit) => digit === token);
+}
