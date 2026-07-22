@@ -23,3 +23,16 @@ export function makeValidEvaluationResult(value: number): EvaluationResult {
 export function makeInvalidEvaluationResult(reason: string): EvaluationResult {
     return { isValid: false, reason };
 }
+
+export type ParseResult<T> =
+    | { isValid: true; value: T }
+    | { isValid: false; reason: string }
+;
+
+export function makeValidParseResult<T>(value: T): ParseResult<T> {
+    return { isValid: true, value };
+}
+
+export function makeInvalidParseResult(reason: string): ParseResult<never> {
+    return { isValid: false, reason };
+}
