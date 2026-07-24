@@ -2,7 +2,7 @@ import type { Token } from './types';
 import { isDigit } from './types';
 import { makeInvalidParseResult, makeValidParseResult} from './result';
 import type { ParseResult } from './result';
-import { makeNumExp} from './expressionAst';
+import { makeNumExp, makeSquareExp } from './expressionAst';
 import type { Exp } from './expressionAst';
 
 
@@ -80,8 +80,26 @@ function parseBase(tokens: Token[], startIndex: number): ExpParseResult {
         : makeInvalidParseResult(`Unexpected token: ${token}. Expected a number or '('.`);
 }
 
+/**
+ * Parses a factor beginning at `startIndex`.
+ * A factor is a base expression optionally followed by the '^2' operator.
+ *
+ * Example: '12^2' is parsed as: 'SquareExp(NumExp(12))'
+ * If '^2' is present, it is consumed and `nextIndex` advances by one.
+ */
 function parseFactor(tokens: Token[], startIndex: number): ExpParseResult {
-    throw new Error('Not implemented.');
+    const baseResult = parseBase(tokens, startIndex);
+    if (!baseResult.isValid) 
+        return baseResult;
+
+    const { exp, nextIndex } = baseResult.value;
+
+    return tokens[nextIndex] === '^2'
+        ? makeValidParseResult({
+            exp: makeSquareExp(exp),
+            nextIndex: nextIndex + 1,
+        })
+        : baseResult;
 }
 
 function parseTerm(tokens: Token[], startIndex: number): ExpParseResult {
