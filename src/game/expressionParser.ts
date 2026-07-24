@@ -69,3 +69,25 @@ function parseNumber(tokens: Token[], startIndex: number): ExpParseResult {
         nextIndex,
     });
 }
+
+function parseBase(tokens: Token[], startIndex: number): ExpParseResult {
+    const token = tokens[startIndex];
+    if (token === undefined) 
+        return makeInvalidParseResult('Unexpected end of input.');
+
+    return isDigit(token)
+        ? parseNumber(tokens, startIndex)
+        : makeInvalidParseResult(`Unexpected token: ${token}. Expected a number or '('.`);
+}
+
+function parseFactor(tokens: Token[], startIndex: number): ExpParseResult {
+    throw new Error('Not implemented.');
+}
+
+function parseTerm(tokens: Token[], startIndex: number): ExpParseResult {
+    throw new Error('Not implemented.');
+}
+
+function parseExpression(tokens: Token[], startIndex: number): ExpParseResult {
+    throw new Error('Not implemented.');
+}
