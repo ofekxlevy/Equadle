@@ -2,7 +2,7 @@ import type { Token } from './types';
 import { isDigit } from './types';
 import { makeInvalidParseResult, makeValidParseResult} from './result';
 import type { ParseResult } from './result';
-import { makeNumExp, makeSquareExp } from './expressionAst';
+import { makeNumExp, makeSquareExp, makeMulExp, makeDivExp } from './expressionAst';
 import type { Exp } from './expressionAst';
 
 
@@ -102,8 +102,47 @@ function parseFactor(tokens: Token[], startIndex: number): ExpParseResult {
         : baseResult;
 }
 
+/**
+ * Parses multiplication and division expressions beginning at `startIndex`.
+ * A term consists of a factor followed by zero or more multiplication or division operations.
+ *
+ * Example:
+ *
+ *     3 * 4 / 2
+ *
+ * is parsed from left to right as:
+ *
+ *     DivExp(
+ *         MulExp(NumExp(3), NumExp(4)),
+ *         NumExp(2)
+ *     )
+ */
 function parseTerm(tokens: Token[], startIndex: number): ExpParseResult {
-    throw new Error('Not implemented.');
+    const firstFactorResult = parseFactor(tokens, startIndex);
+    if (!firstFactorResult.isValid) 
+        return firstFactorResult;
+
+    return parseTermTail(tokens, firstFactorResult.value.exp, firstFactorResult.value.nextIndex);
+}
+
+function parseTermTail(tokens: Token[], leftExp: Exp, nextIndex: number): ExpParseResult {
+    const operator = tokens[nextIndex];
+    if (operator !== '*' && operator !== '/') {
+        return makeValidParseResult({
+            exp: leftExp,
+            nextIndex,
+        });
+    }
+
+    const rightResult = parseFactor(tokens, nextIndex + 1);
+    if (!rightResult.isValid) 
+        return rightResult;
+
+    const combinedExp = operator === '*'
+        ? makeMulExp(leftExp, rightResult.value.exp)
+        : makeDivExp(leftExp, rightResult.value.exp);
+
+    return parseTermTail(tokens, combinedExp, rightResult.value.nextIndex);
 }
 
 function parseExpression(tokens: Token[], startIndex: number): ExpParseResult {
