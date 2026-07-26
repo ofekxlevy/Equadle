@@ -41,20 +41,30 @@ function findNumberEndIndex(tokens: Token[], index: number): number {
 }
 
 /**
- * Parses a number beginning at `startIndex` and creates a NumExp AST node.
+ * Parses a base expression beginning at `startIndex`.
+ * A base expression is either a number or a parenthesized expression.
  *
- * The function returns:
- * - the NumExp created from those digits;
- * - the index of the first token that was not consumed.
+ * Examples:
  *
- * Example:
- *      parseNumber(['1', '2', '+', '3'], 0)
- * 
- * returns a successful result containing:
- *      {
- *          exp: makeNumExp(12),
- *          nextIndex: 2,
- *      }
+ *     12
+ *
+ * is parsed as:
+ *
+ *     NumExp(12)
+ *
+ * while:
+ *
+ *     (3 + 5)
+ *
+ * is parsed as:
+ *
+ *     AddExp(
+ *         NumExp(3),
+ *         NumExp(5)
+ *     )
+ *
+ * Parentheses do not create an AST node. They only determine
+ * the order in which the expression is parsed.
  */
 function parseNumber(tokens: Token[], startIndex: number): ExpParseResult {
     const token = tokens[startIndex];
@@ -75,9 +85,26 @@ function parseBase(tokens: Token[], startIndex: number): ExpParseResult {
     if (token === undefined) 
         return makeInvalidParseResult('Unexpected end of input.');
 
-    return isDigit(token)
-        ? parseNumber(tokens, startIndex)
-        : makeInvalidParseResult(`Unexpected token: ${token}. Expected a number or '('.`);
+    if (isDigit(token)) 
+        return parseNumber(tokens, startIndex);
+
+    if (token === '(') {
+        const innerResult = parseExpression(tokens, startIndex + 1);
+        if (!innerResult.isValid) 
+            return innerResult;
+        
+        const closingParenIndex = innerResult.value.nextIndex;
+        if (tokens[closingParenIndex] !== ')') 
+            return makeInvalidParseResult('Expected closing parenthesis.');
+        
+        return makeValidParseResult({
+            exp: innerResult.value.exp,
+            nextIndex: closingParenIndex + 1,
+        });
+    }
+
+    return makeInvalidParseResult(`Unexpected token: ${token}`);
+    
 }
 
 /**
