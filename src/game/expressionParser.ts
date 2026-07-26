@@ -2,7 +2,7 @@ import type { Token } from './types';
 import { isDigit } from './types';
 import { makeInvalidParseResult, makeValidParseResult} from './result';
 import type { ParseResult } from './result';
-import { makeNumExp, makeSquareExp, makeMulExp, makeDivExp } from './expressionAst';
+import { makeNumExp, makeSquareExp, makeMulExp, makeDivExp, makeSubExp, makeAddExp } from './expressionAst';
 import type { Exp } from './expressionAst';
 
 
@@ -145,6 +145,46 @@ function parseTermTail(tokens: Token[], leftExp: Exp, nextIndex: number): ExpPar
     return parseTermTail(tokens, combinedExp, rightResult.value.nextIndex);
 }
 
+/**
+ * Parses addition and subtraction expressions beginning at `startIndex`.
+ * An expression consists of a term followed by zero or more
+ * addition or subtraction operations.
+ *
+ * Example:
+ *
+ *     12 + 3 - 4
+ *
+ * is parsed from left to right as:
+ *
+ *     SubExp(
+ *         AddExp(NumExp(12), NumExp(3)),
+ *         NumExp(4)
+ *     )
+ */
 function parseExpression(tokens: Token[], startIndex: number): ExpParseResult {
-    throw new Error('Not implemented.');
+    const firstTermResult = parseTerm(tokens, startIndex);
+    if (!firstTermResult.isValid) 
+        return firstTermResult;
+
+    return parseExpressionTail(tokens, firstTermResult.value.exp, firstTermResult.value.nextIndex);
+}
+
+function parseExpressionTail(tokens: Token[], leftExp: Exp, nextIndex: number): ExpParseResult {
+    const operator = tokens[nextIndex];
+    if (operator !== '+' && operator !== '-') {
+        return makeValidParseResult({
+            exp: leftExp,
+            nextIndex,
+        });
+    }
+
+    const rightResult = parseTerm(tokens, nextIndex + 1);
+    if (!rightResult.isValid) 
+        return rightResult;
+
+    const combinedExp = operator === '+'
+        ? makeAddExp(leftExp, rightResult.value.exp)
+        : makeSubExp(leftExp, rightResult.value.exp);
+
+    return parseExpressionTail(tokens, combinedExp, rightResult.value.nextIndex);
 }
