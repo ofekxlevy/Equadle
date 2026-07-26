@@ -1,3 +1,61 @@
+/**
+ * Expression parser for Equadle equations.
+ *
+ * This file is responsible for converting an equation represented as an array
+ * of tokens into an abstract syntax tree (AST). The parser handles the left
+ * side of the equation as a mathematical expression and converts the right
+ * side into the expected numeric result.
+ *
+ * The parser uses a recursive-descent design. Each parsing function is
+ * responsible for one precedence level in the expression grammar:
+ *
+ *     parseExpression  -> addition and subtraction
+ *     parseTerm        -> multiplication and division
+ *     parseFactor      -> the optional '^2' operator
+ *     parseBase        -> numbers and parenthesized expressions
+ *     parseNumber      -> consecutive digit tokens
+ *
+ * This hierarchy preserves the required operator precedence:
+ *
+ *     parentheses
+ *     square
+ *     multiplication and division
+ *     addition and subtraction
+ *
+ * Binary operators are parsed as left-associative. For example:
+ *
+ *     12 - 3 - 4
+ *
+ * is parsed as:
+ *
+ *     (12 - 3) - 4
+ *
+ * Every internal parser function returns both:
+ *
+ * - the AST node created from the consumed tokens;
+ * - the index of the first token that was not consumed.
+ *
+ * Returning the next unread index allows one parser level to call another
+ * without mutating the token array or maintaining shared parser state. This
+ * keeps the implementation functional, recursive, and easy to compose.
+ *
+ * Parentheses do not create a dedicated AST node. They only affect parsing
+ * order, so parsing a parenthesized expression returns the inner expression.
+ *
+ * The public entry points are:
+ *
+ * - parseCompleteExpression: parses a complete mathematical expression and
+ *   verifies that no unread tokens remain;
+ * - parseEquation: splits a full equation around '=', parses the left side,
+ *   converts the right side into a number, and creates an Equation AST value.
+ *
+ * Basic game-specific rules, such as equation length, allowed tokens, leading
+ * zeroes, standalone zeroes, and the structure of the right side, are handled
+ * separately by basicValidators.ts. Semantic rules, such as division by zero
+ * and checking that the evaluated expression equals the expected result, are
+ * handled during evaluation rather than parsing.
+ */
+
 import type { Token } from './types';
 import { isDigit } from './types';
 import { makeInvalidParseResult, makeValidParseResult} from './result';
