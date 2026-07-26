@@ -283,7 +283,7 @@ export function parseCompleteExpression(tokens: Token[]): ParseResult<Exp> {
  * requiring only digits on the right side, are checked by the basic
  * validators before this function is called.
  */
-function parseEquation(tokens: Token[]): ParseResult<Equation> {
+export function parseEquation(tokens: Token[]): ParseResult<Equation> {
     const equalsIndex = tokens.indexOf('=');
     if (equalsIndex === -1) 
         return makeInvalidParseResult('Equation must contain an equals sign.');
