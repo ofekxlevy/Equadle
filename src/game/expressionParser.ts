@@ -2,8 +2,8 @@ import type { Token } from './types';
 import { isDigit } from './types';
 import { makeInvalidParseResult, makeValidParseResult} from './result';
 import type { ParseResult } from './result';
-import { makeNumExp, makeSquareExp, makeMulExp, makeDivExp, makeSubExp, makeAddExp } from './expressionAst';
-import type { Exp } from './expressionAst';
+import { makeNumExp, makeSquareExp, makeMulExp, makeDivExp, makeSubExp, makeAddExp, makeEquation } from './expressionAst';
+import type { Exp , Equation } from './expressionAst';
 
 
 /**
@@ -257,4 +257,48 @@ export function parseCompleteExpression(tokens: Token[]): ParseResult<Exp> {
     }
 
     return makeValidParseResult(result.value.exp);
+}
+
+/**
+ * Parses a complete equation.
+ * A complete equation consists of:  <expression> = <number>
+ * The left side is parsed as an expression AST, while the right side
+ * is converted into the expected numeric result.
+ *
+ * Example:
+ *
+ *     (3 + 5) * 4 = 32
+ *
+ * is parsed as:
+ *
+ *     Equation(
+ *         MulExp(
+ *             AddExp(NumExp(3), NumExp(5)),
+ *             NumExp(4)
+ *         ),
+ *         32
+ *     )
+ *
+ * Basic structural rules, such as having exactly one equals sign and
+ * requiring only digits on the right side, are checked by the basic
+ * validators before this function is called.
+ */
+function parseEquation(tokens: Token[]): ParseResult<Equation> {
+    const equalsIndex = tokens.indexOf('=');
+    if (equalsIndex === -1) 
+        return makeInvalidParseResult('Equation must contain an equals sign.');
+
+    const leftTokens = tokens.slice(0, equalsIndex);
+    const rightTokens = tokens.slice(equalsIndex + 1);
+    const leftResult = parseCompleteExpression(leftTokens);
+    
+    if (!leftResult.isValid) 
+        return leftResult;
+
+    if (rightTokens.length === 0 || !rightTokens.every(isDigit))
+        return makeInvalidParseResult('Invalid right-hand side of equation.');
+
+    const expectedValue = Number(rightTokens.join(''));
+
+    return makeValidParseResult(makeEquation(leftResult.value, expectedValue));
 }
