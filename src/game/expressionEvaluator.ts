@@ -1,5 +1,5 @@
 import type { Exp } from './expressionAst';
-import { isNumExp, isSquareExp, isAddExp } from './expressionAst';
+import { isNumExp, isSquareExp, isAddExp, isMulExp, isSubExp } from './expressionAst';
 import type { EvaluationResult } from './result';
 import {
     makeInvalidEvaluationResult,
@@ -24,9 +24,20 @@ export function evaluateExpression(exp: Exp): EvaluationResult {
             : innerResult;
     }
     
-    if (isAddExp(exp)) {
-        return evaluateBinaryExpression(exp.left, exp.right, (l, r) => l + r);
-    }
+    if (isAddExp(exp)) 
+        return evaluateBinaryExpression(exp.left, exp.right, 
+            (l, r) => l + r);
+    
+
+    if (isSubExp(exp)) 
+        return evaluateBinaryExpression(exp.left, exp.right,
+            (left, right) => left - right);
+    
+
+    if (isMulExp(exp)) 
+        return evaluateBinaryExpression(exp.left, exp.right,
+            (left, right) => left * right);
+    
 
     return makeInvalidEvaluationResult(
         `Evaluation is not implemented yet for expression type: ${exp.tag}`
