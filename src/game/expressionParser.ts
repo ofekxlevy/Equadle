@@ -41,6 +41,44 @@ function findNumberEndIndex(tokens: Token[], index: number): number {
 }
 
 /**
+ * Parses a number beginning at `startIndex`.
+ * A number consists of one or more consecutive digit tokens. The function
+ * finds the end of the digit sequence, converts the consumed tokens into a
+ * JavaScript number, and creates a NumExp AST node.
+ * The returned `nextIndex` points to the first token that was not consumed.
+ *
+ * Example:
+ *
+ *     parseNumber(['1', '2', '+', '3'], 0)
+ *
+ * returns a successful result containing:
+ *
+ *     {
+ *         exp: NumExp(12),
+ *         nextIndex: 2,
+ *     }
+ *
+ * The function fails if `startIndex` is outside the token array or if the
+ * token at `startIndex` is not a digit.
+ *
+ * Game-specific restrictions, such as leading zeroes or standalone zeroes,
+ * are validated separately by the basic validators.
+ */
+function parseNumber(tokens: Token[], startIndex: number): ExpParseResult {
+    const token = tokens[startIndex];
+    if (token === undefined || !isDigit(token)) 
+        return makeInvalidParseResult('Expected a number.');
+    
+    const nextIndex = findNumberEndIndex(tokens, startIndex);
+    const value = Number(tokens.slice(startIndex, nextIndex).join(''));
+
+    return makeValidParseResult({
+        exp: makeNumExp(value),
+        nextIndex,
+    });
+}
+
+/**
  * Parses a base expression beginning at `startIndex`.
  * A base expression is either a number or a parenthesized expression.
  *
@@ -66,20 +104,6 @@ function findNumberEndIndex(tokens: Token[], index: number): number {
  * Parentheses do not create an AST node. They only determine
  * the order in which the expression is parsed.
  */
-function parseNumber(tokens: Token[], startIndex: number): ExpParseResult {
-    const token = tokens[startIndex];
-    if (token === undefined || !isDigit(token)) 
-        return makeInvalidParseResult('Expected a number.');
-    
-    const nextIndex = findNumberEndIndex(tokens, startIndex);
-    const value = Number(tokens.slice(startIndex, nextIndex).join(''));
-
-    return makeValidParseResult({
-        exp: makeNumExp(value),
-        nextIndex,
-    });
-}
-
 function parseBase(tokens: Token[], startIndex: number): ExpParseResult {
     const token = tokens[startIndex];
     if (token === undefined) 
@@ -214,4 +238,23 @@ function parseExpressionTail(tokens: Token[], leftExp: Exp, nextIndex: number): 
         : makeSubExp(leftExp, rightResult.value.exp);
 
     return parseExpressionTail(tokens, combinedExp, rightResult.value.nextIndex);
+}
+
+/**
+ * Parses a complete expression.
+ * The parsing succeeds only if every token belongs to the expression.
+ * If parsing stops before the end of the token array, the remaining token
+ * represents invalid syntax.
+ */
+export function parseCompleteExpression(tokens: Token[]): ParseResult<Exp> {
+    const result = parseExpression(tokens, 0);
+    if (!result.isValid) 
+        return result;
+
+    if (result.value.nextIndex !== tokens.length) {
+        const unexpectedToken = tokens[result.value.nextIndex];
+        return makeInvalidParseResult(`Unexpected token: ${unexpectedToken}`);
+    }
+
+    return makeValidParseResult(result.value.exp);
 }
