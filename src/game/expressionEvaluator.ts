@@ -1,5 +1,5 @@
 import type { Exp } from './expressionAst';
-import { isNumExp, isSquareExp, isAddExp, isMulExp, isSubExp } from './expressionAst';
+import { isNumExp, isSquareExp, isAddExp, isMulExp, isSubExp, isDivExp } from './expressionAst';
 import type { EvaluationResult } from './result';
 import {
     makeInvalidEvaluationResult,
@@ -38,9 +38,23 @@ export function evaluateExpression(exp: Exp): EvaluationResult {
         return evaluateBinaryExpression(exp.left, exp.right,
             (left, right) => left * right);
     
+    if (isDivExp(exp)) {
+        const leftResult = evaluateExpression(exp.left);
+        if (!leftResult.isValid)
+            return leftResult;
+
+        const rightResult = evaluateExpression(exp.right);
+        if (!rightResult.isValid)
+            return rightResult;
+
+        if (rightResult.value === 0)
+            return makeInvalidEvaluationResult('Division by zero.');
+
+        return makeValidEvaluationResult(leftResult.value / rightResult.value);
+    }
 
     return makeInvalidEvaluationResult(
-        `Evaluation is not implemented yet for expression type: ${exp.tag}`
+        `Evaluation is not implemented yet`
     );
 }
 
