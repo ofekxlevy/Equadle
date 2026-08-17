@@ -7,9 +7,9 @@ function runValidatorsFromIndex<T>(
     value: T,
     index: number
 ): ValidationResult {
-    if (index >= validators.length) {
+    if (index >= validators.length) 
         return { isValid: true };
-    }
+    
     const result = validators[index](value);
     return result.isValid
         ? runValidatorsFromIndex(validators, value, index + 1)
