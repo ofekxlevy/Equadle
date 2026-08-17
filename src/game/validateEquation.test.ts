@@ -15,7 +15,7 @@ function expectInvalid(equation: Token[], reason: string): void {
 
 describe('validateEquation', () => {
 
-    // ===== Valid equations =====
+    // Valid equations 
 
     describe('valid equations', () => {
         it('accepts a valid equation with parentheses', () => {
@@ -44,7 +44,7 @@ describe('validateEquation', () => {
     });
 
 
-    // ===== Basic structural validation =====
+    // Basic structural validation 
 
     describe('basic structural validation', () => {
         it('rejects an equation with the wrong number of tokens', () => {
@@ -105,7 +105,7 @@ describe('validateEquation', () => {
     });
 
 
-    // ===== Parser validation =====
+    // Parser validation 
 
     describe('parser validation', () => {
         it('rejects invalid expression syntax', () => {
@@ -124,7 +124,7 @@ describe('validateEquation', () => {
     });
 
 
-    // ===== Evaluation validation =====
+    // Evaluation validation 
 
     describe('evaluation validation', () => {
         it('rejects division by zero after evaluating the denominator', () => {
