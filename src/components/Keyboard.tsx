@@ -88,7 +88,14 @@ function renderTokenKey(
             }
             onClick={() => onTokenClick(token)}
         >
-            {token}
+            {token === '^2' ? (
+                <span className="square-key-label">
+                    <span>x</span>
+                    <sup>2</sup>
+                </span>
+            ) : (
+                token
+            )}
         </button>
     );
 }

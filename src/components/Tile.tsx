@@ -8,7 +8,11 @@ type TileProps = {
 export function Tile({ tile }: TileProps) {
     return (
         <span className={`tile tile-${tile.state}`}>
-            {tile.value}
+            {tile.value === '^2' ? (
+                <sup className="tile-square">2</sup>
+            ) : (
+                tile.value
+            )}
         </span>
     );
 }

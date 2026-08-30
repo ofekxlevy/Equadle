@@ -14,6 +14,14 @@
     font-weight: 700;
 }
 
+.tile-square {
+    position: relative;
+    top: -0.35em;
+
+    font-size: 0.6em;
+    line-height: 1;
+}
+
 .tile-correct {
     background-color: #6aaa64;
     color: white;
