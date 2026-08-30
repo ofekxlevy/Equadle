@@ -123,4 +123,55 @@ describe('evaluateGuess', () => {
         });
     });
 
+    it('handles more than two occurrences of the same token correctly', () => {
+        const secret: Token[] =
+            ['1', '2', '1', '3', '1', '=', '4', '5', '6', '7'];
+
+        const guess: Token[] =
+            ['1', '1', '1', '1', '8', '=', '4', '5', '6', '7'];
+
+        const result = evaluateGuess(secret, guess);
+
+        expect(result[0]).toEqual({
+            value: '1',
+            state: 'correct',
+        });
+
+        expect(result[1]).toEqual({
+            value: '1',
+            state: 'present',
+        });
+
+        expect(result[2]).toEqual({
+            value: '1',
+            state: 'correct',
+        });
+
+        expect(result[3]).toEqual({
+            value: '1',
+            state: 'absent',
+        });
+    });
+
+
+    it('gives correct matches priority over present matches', () => {
+        const secret: Token[] =
+            ['1', '2', '+', '3', '4', '-', '5', '=', '6', '7'];
+
+        const guess: Token[] =
+            ['2', '2', '+', '3', '4', '-', '5', '=', '6', '7'];
+
+        const result = evaluateGuess(secret, guess);
+
+        expect(result[0]).toEqual({
+            value: '2',
+            state: 'absent',
+        });
+
+        expect(result[1]).toEqual({
+            value: '2',
+            state: 'correct',
+        });
+    });
+
 });
