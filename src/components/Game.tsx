@@ -47,8 +47,10 @@ export function Game() {
         <div>
             <h1>Equadle</h1>
 
-            <Board guesses={gameState.guesses} />
-
+            <Board
+                guesses={gameState.guesses}
+                currentGuess={stringToTokens(currentGuess)}
+            />
             <p>Status: {gameState.status}</p>
             <p>Current guess: {currentGuess}</p>
 
