@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import './Game.css';
 import { getRandomEquation } from '../game/equations';
 import { createGame, submitGuess } from '../game/gameState';
 import { EQUATION_LENGTH } from '../game/types';
@@ -49,6 +50,15 @@ export function Game() {
         }
     }
 
+    function handleNewGame() {
+        setGameState(
+            createGame(getRandomEquation())
+        );
+
+        setCurrentGuess([]);
+        setErrorMessage('');
+    }
+
     return (
         <div>
             <h1>Equadle</h1>
@@ -58,16 +68,35 @@ export function Game() {
                 currentGuess={currentGuess}
             />
 
-            <p>Status: {gameState.status}</p>
+            {gameState.status === 'won' && (
+                <p>You won!</p>
+            )}
+
+            {gameState.status === 'lost' && (
+                <p>
+                    The equation was: {gameState.secret.join('')}
+                </p>
+            )}
 
             {errorMessage && <p>{errorMessage}</p>}
 
-            <Keyboard
-                guesses={gameState.guesses}
-                onTokenClick={handleTokenClick}
-                onDelete={handleDelete}
-                onSubmit={handleSubmit}
-            />
+            {gameState.status === 'playing' && (
+                <Keyboard
+                    guesses={gameState.guesses}
+                    onTokenClick={handleTokenClick}
+                    onDelete={handleDelete}
+                    onSubmit={handleSubmit}
+                />
+            )}
+
+            {gameState.status !== 'playing' && (
+                <button
+                    className="new-game-button"
+                    onClick={handleNewGame}
+                >
+                    New Game
+                </button>
+            )}
         </div>
     );
 }
