@@ -1,10 +1,9 @@
+import { Game } from './components/Game';
+
 function App() {
   return (
-    <main>
-      <h1>Equadle</h1>
-      <p>Equation Wordle Game</p>
-    </main>
-  )
+    <Game />
+  );
 }
 
-export default App
+export default App;
