@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { getRandomEquation } from '../game/equations';
 import { createGame, submitGuess } from '../game/gameState';
 import type { Token } from '../game/types';
-import { Tile } from './Tile';
+import { Board } from './Board';
 
 function stringToTokens(input: string): Token[] {
     const tokens: Token[] = [];
@@ -47,18 +47,7 @@ export function Game() {
         <div>
             <h1>Equadle</h1>
 
-            <div>
-                {gameState.guesses.map((guess, guessIndex) => (
-                    <div key={guessIndex}>
-                        {guess.map((tile, tileIndex) => (
-                            <Tile
-                                key={tileIndex}
-                                tile={tile}
-                            />
-                        ))}
-                    </div>
-                ))}
-            </div>
+            <Board guesses={gameState.guesses} />
 
             <p>Status: {gameState.status}</p>
             <p>Current guess: {currentGuess}</p>
