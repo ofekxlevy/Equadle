@@ -6,6 +6,7 @@ import type {
 import { EQUATION_LENGTH } from '../game/types';
 import { MAX_GUESSES } from '../game/gameState';
 import { Tile } from './Tile';
+import './Board.css';
 
 type BoardProps = {
     guesses: TileData[][];
@@ -54,9 +55,12 @@ export function Board({
     ];
 
     return (
-        <div>
+        <div className="board">
             {rows.map((row, rowIndex) => (
-                <div key={rowIndex}>
+                <div
+                    className="board-row"
+                    key={rowIndex}
+                >
                     {row.map((tile, tileIndex) => (
                         <Tile
                             key={tileIndex}

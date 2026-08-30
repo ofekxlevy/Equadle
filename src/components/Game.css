@@ -1,6 +1,49 @@
+.game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    min-height: 100vh;
+    padding: 24px 16px;
+
+    box-sizing: border-box;
+}
+
+.game-title {
+    margin: 0 0 24px;
+
+    font-size: 42px;
+    font-weight: 800;
+}
+
+.game-message {
+    margin: 16px 0 0;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.game-message-success {
+    color: #2f7d32;
+}
+
+.game-message-loss {
+    color: #7a2f2f;
+}
+
+.game-error {
+    margin: 16px 0 0;
+
+    color: #b00020;
+
+    font-size: 16px;
+    font-weight: 600;
+}
+
 .new-game-button {
     min-width: 160px;
     height: 52px;
+    margin-top: 20px;
     padding: 0 24px;
 
     border: 2px solid #888;

@@ -108,8 +108,10 @@ export function Game() {
     }, [gameState, currentGuess]);
 
     return (
-        <div>
-            <h1>Equadle</h1>
+        <div className="game">
+            <h1 className="game-title">
+                Equadle
+            </h1>
 
             <Board
                 guesses={gameState.guesses}
@@ -118,16 +120,22 @@ export function Game() {
             />
 
             {gameState.status === 'won' && (
-                <p>You won!</p>
+                <p className="game-message game-message-success">
+                    You won!
+                </p>
             )}
 
             {gameState.status === 'lost' && (
-                <p>
+                <p className="game-message game-message-loss">
                     The equation was: {gameState.secret.join('')}
                 </p>
             )}
 
-            {errorMessage && <p>{errorMessage}</p>}
+            {errorMessage && (
+                <p className="game-error">
+                    {errorMessage}
+                </p>
+            )}
 
             {gameState.status === 'playing' && (
                 <Keyboard
