@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import './Game.css';
 import { getRandomEquation } from '../game/equations';
 import { createGame, submitGuess } from '../game/gameState';
-import { EQUATION_LENGTH } from '../game/types';
+import {
+    ALLOWED_TOKENS,
+    EQUATION_LENGTH,
+} from '../game/types';
 import type { Token } from '../game/types';
 import { Board } from './Board';
 import { Keyboard } from './Keyboard';
@@ -59,6 +62,51 @@ export function Game() {
         setErrorMessage('');
     }
 
+    useEffect(() => {
+        function handleKeyDown(event: KeyboardEvent) {
+            if (gameState.status !== 'playing') {
+                return;
+            }
+
+            if (event.key === 'Backspace') {
+                event.preventDefault();
+                handleDelete();
+                return;
+            }
+
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleSubmit();
+                return;
+            }
+
+            if (event.key === '^') {
+                event.preventDefault();
+                handleTokenClick('^2');
+                return;
+            }
+
+            const token = event.key as Token;
+
+            if (ALLOWED_TOKENS.includes(token)) {
+                event.preventDefault();
+                handleTokenClick(token);
+            }
+        }
+
+        window.addEventListener(
+            'keydown',
+            handleKeyDown
+        );
+
+        return () => {
+            window.removeEventListener(
+                'keydown',
+                handleKeyDown
+            );
+        };
+    }, [gameState, currentGuess]);
+
     return (
         <div>
             <h1>Equadle</h1>
@@ -66,6 +114,7 @@ export function Game() {
             <Board
                 guesses={gameState.guesses}
                 currentGuess={currentGuess}
+                status={gameState.status}
             />
 
             {gameState.status === 'won' && (

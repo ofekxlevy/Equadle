@@ -1,4 +1,8 @@
-import type { Tile as TileData, Token } from '../game/types';
+import type {
+    GameStatus,
+    Tile as TileData,
+    Token,
+} from '../game/types';
 import { EQUATION_LENGTH } from '../game/types';
 import { MAX_GUESSES } from '../game/gameState';
 import { Tile } from './Tile';
@@ -6,10 +10,14 @@ import { Tile } from './Tile';
 type BoardProps = {
     guesses: TileData[][];
     currentGuess: Token[];
+    status: GameStatus;
 };
 
-export function Board({ guesses, currentGuess }: BoardProps) {
-
+export function Board({
+    guesses,
+    currentGuess,
+    status,
+}: BoardProps) {
     const currentRow: TileData[] = Array.from(
         { length: EQUATION_LENGTH },
         (_, index) => ({
@@ -19,6 +27,7 @@ export function Board({ guesses, currentGuess }: BoardProps) {
     );
 
     const shouldShowCurrentRow =
+        status === 'playing' &&
         guesses.length < MAX_GUESSES;
 
     const emptyRowsCount =
