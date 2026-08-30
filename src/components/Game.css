@@ -54,3 +54,78 @@
 
     cursor: pointer;
 }
+
+.rules-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+    box-sizing: border-box;
+
+    background-color: rgba(0, 0, 0, 0.55);
+}
+
+.rules-banner {
+    width: min(520px, 100%);
+    padding: 28px;
+
+    box-sizing: border-box;
+    border-radius: 12px;
+
+    background-color: white;
+    color: black;
+}
+
+.rules-banner h2 {
+    margin: 0 0 12px;
+
+    color: #111;
+    font-size: 30px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.rules-banner p {
+    margin: 0 0 16px;
+
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.rules-banner ul {
+    margin: 0;
+    padding-left: 24px;
+
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.rules-start-button {
+    display: block;
+
+    min-width: 160px;
+    height: 52px;
+    margin: 24px auto 0;
+    padding: 0 24px;
+
+    border: 2px solid #555;
+    border-radius: 6px;
+
+    background-color: #111;
+    color: white;
+
+    font-size: 20px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.rules-start-button:hover {
+    background-color: #333;
+}

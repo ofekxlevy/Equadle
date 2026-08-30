@@ -18,6 +18,7 @@ export function Game() {
 
     const [currentGuess, setCurrentGuess] = useState<Token[]>([]);
     const [errorMessage, setErrorMessage] = useState('');
+    const [showRules, setShowRules] = useState(true);
 
     const gameStateRef = useRef(gameState);
     const currentGuessRef = useRef(currentGuess);
@@ -71,11 +72,15 @@ export function Game() {
 
         setCurrentGuess([]);
         setErrorMessage('');
+        setShowRules(true);
     }
 
     useEffect(() => {
         function handleKeyDown(event: KeyboardEvent) {
-            if (gameStateRef.current.status !== 'playing') {
+            if (
+                gameStateRef.current.status !== 'playing' ||
+                showRules
+            ) {
                 return;
             }
 
@@ -154,13 +159,59 @@ export function Game() {
                 handleKeyDown
             );
         };
-    }, []);
+    }, [showRules]);
 
     return (
         <div className="game">
             <h1 className="game-title">
                 Equadle
             </h1>
+
+            {showRules && (
+                <div className="rules-overlay">
+                    <div className="rules-banner">
+                        <h2>How to Play</h2>
+
+                        <p>
+                            Guess the hidden equation in 6 tries.
+                        </p>
+
+                        <ul>
+                            <li>
+                                Each equation contains exactly 10 tiles.
+                            </li>
+
+                            <li>
+                                Every guess must be a valid equation.
+                            </li>
+
+                            <li>
+                                The left side must equal the number on the right side.
+                            </li>
+
+                            <li>
+                                Green means the token is in the correct position.
+                            </li>
+
+                            <li>
+                                Yellow means the token exists in the equation
+                                but is in the wrong position.
+                            </li>
+
+                            <li>
+                                Gray means the token does not appear in the equation.
+                            </li>
+                        </ul>
+
+                        <button
+                            className="rules-start-button"
+                            onClick={() => setShowRules(false)}
+                        >
+                            Start Game
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <Board
                 guesses={gameState.guesses}
