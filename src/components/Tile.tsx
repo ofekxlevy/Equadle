@@ -1,4 +1,5 @@
 import type { Tile as TileData } from '../game/types';
+import './Tile.css';
 
 type TileProps = {
     tile: TileData;
