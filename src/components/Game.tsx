@@ -4,39 +4,29 @@ import { getRandomEquation } from '../game/equations';
 import { createGame, submitGuess } from '../game/gameState';
 import type { Token } from '../game/types';
 import { Board } from './Board';
-
-function stringToTokens(input: string): Token[] {
-    const tokens: Token[] = [];
-    let index = 0;
-
-    while (index < input.length) {
-        if (input.slice(index, index + 2) === '^2') {
-            tokens.push('^2');
-            index += 2;
-        } else {
-            tokens.push(input[index] as Token);
-            index++;
-        }
-    }
-
-    return tokens;
-}
+import { Keyboard } from './Keyboard';
 
 export function Game() {
     const [gameState, setGameState] = useState(() =>
         createGame(getRandomEquation())
     );
 
-    const [currentGuess, setCurrentGuess] = useState('');
+    const [currentGuess, setCurrentGuess] = useState<Token[]>([]);
     const [errorMessage, setErrorMessage] = useState('');
 
+    function handleTokenClick(token: Token) {
+        setCurrentGuess((guess) => [
+            ...guess,
+            token,
+        ]);
+    }
+
     function handleSubmit() {
-        const guess = stringToTokens(currentGuess);
-        const result = submitGuess(gameState, guess);
+        const result = submitGuess(gameState, currentGuess);
 
         if (result.isValid) {
             setGameState(result.state);
-            setCurrentGuess('');
+            setCurrentGuess([]);
             setErrorMessage('');
         } else {
             setErrorMessage(result.reason);
@@ -49,16 +39,16 @@ export function Game() {
 
             <Board
                 guesses={gameState.guesses}
-                currentGuess={stringToTokens(currentGuess)}
+                currentGuess={currentGuess}
             />
+
             <p>Status: {gameState.status}</p>
-            <p>Current guess: {currentGuess}</p>
 
             {errorMessage && <p>{errorMessage}</p>}
 
-            <input
-                value={currentGuess}
-                onChange={(event) => setCurrentGuess(event.target.value)}
+            <Keyboard
+                guesses={gameState.guesses}
+                onTokenClick={handleTokenClick}
             />
 
             <button onClick={handleSubmit}>
