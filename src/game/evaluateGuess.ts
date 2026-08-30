@@ -1,27 +1,58 @@
-import type { Tile, TileState, Token } from './types';
-
-function getTileState(secret: Token[], token: Token, index: number): TileState {
-    if (secret[index] === token) 
-        return 'correct';
-    if (secret.includes(token)) 
-        return 'present';
-    return 'absent';
-}
+import type { Tile, Token } from './types';
 
 /**
  * Compares a guessed equation with the secret equation and returns
  * the tile state for each token in the guess.
  *
- * A tile is marked as:
- * - 'correct' if the token is in the exact same position.
- * - 'present' if the token exists in the secret equation but in another position.
- * - 'absent' if the token does not exist in the secret equation.
- *
- * Note: this simple implementation does not fully handle duplicate tokens yet.
+ * Matching is done in two passes:
+ * 1. Mark all exact matches as 'correct'.
+ * 2. Mark remaining matches as 'present' only if an unused matching
+ *    token still exists in the secret.
  */
 export function evaluateGuess(secret: Token[], guess: Token[]): Tile[] {
-    return guess.map((token, index) => ({
+
+    // ===== Initialize result =====
+
+    const tiles: Tile[] = guess.map((token) => ({
         value: token,
-        state: getTileState(secret, token, index),
+        state: 'absent',
     }));
+
+    const usedSecretTokens: boolean[] =
+        secret.map(() => false);
+
+
+    // ===== First pass: correct tokens =====
+
+    guess.forEach((token, index) => {
+        if (secret[index] === token) {
+            tiles[index].state = 'correct';
+            usedSecretTokens[index] = true;
+        }
+    });
+
+
+    // ===== Second pass: present tokens =====
+
+    guess.forEach((token, guessIndex) => {
+
+        if (tiles[guessIndex].state === 'correct')
+            return;
+
+        const matchingSecretIndex = secret.findIndex(
+            (secretToken, secretIndex) =>
+                secretToken === token &&
+                !usedSecretTokens[secretIndex]
+        );
+
+        if (matchingSecretIndex !== -1) {
+            tiles[guessIndex].state = 'present';
+            usedSecretTokens[matchingSecretIndex] = true;
+        }
+    });
+
+
+    // ===== Return result =====
+
+    return tiles;
 }
