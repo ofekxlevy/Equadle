@@ -6,6 +6,7 @@ type KeyboardProps = {
     guesses: Tile[][];
     onTokenClick: (token: Token) => void;
     onDelete: () => void;
+    onSubmit: () => void;
 };
 
 const STATE_PRIORITY: Record<
@@ -51,6 +52,7 @@ export function Keyboard({
     guesses,
     onTokenClick,
     onDelete,
+    onSubmit,
 }: KeyboardProps) {
     return (
         <div className="keyboard">
@@ -78,6 +80,13 @@ export function Keyboard({
                 onClick={onDelete}
             >
                 ⌫
+            </button>
+
+            <button
+                className="keyboard-key"
+                onClick={onSubmit}
+            >
+                Enter
             </button>
         </div>
     );

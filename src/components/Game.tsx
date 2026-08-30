@@ -66,11 +66,8 @@ export function Game() {
                 guesses={gameState.guesses}
                 onTokenClick={handleTokenClick}
                 onDelete={handleDelete}
+                onSubmit={handleSubmit}
             />
-
-            <button onClick={handleSubmit}>
-                Submit
-            </button>
         </div>
     );
 }
