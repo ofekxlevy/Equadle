@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { getRandomEquation } from '../game/equations';
 import { createGame, submitGuess } from '../game/gameState';
+import { EQUATION_LENGTH } from '../game/types';
 import type { Token } from '../game/types';
 import { Board } from './Board';
 import { Keyboard } from './Keyboard';
@@ -15,14 +16,29 @@ export function Game() {
     const [errorMessage, setErrorMessage] = useState('');
 
     function handleTokenClick(token: Token) {
-        setCurrentGuess((guess) => [
-            ...guess,
-            token,
-        ]);
+        setCurrentGuess((guess) => {
+            if (guess.length >= EQUATION_LENGTH) {
+                return guess;
+            }
+
+            return [
+                ...guess,
+                token,
+            ];
+        });
+    }
+
+    function handleDelete() {
+        setCurrentGuess((guess) =>
+            guess.slice(0, -1)
+        );
     }
 
     function handleSubmit() {
-        const result = submitGuess(gameState, currentGuess);
+        const result = submitGuess(
+            gameState,
+            currentGuess
+        );
 
         if (result.isValid) {
             setGameState(result.state);
@@ -49,6 +65,7 @@ export function Game() {
             <Keyboard
                 guesses={gameState.guesses}
                 onTokenClick={handleTokenClick}
+                onDelete={handleDelete}
             />
 
             <button onClick={handleSubmit}>

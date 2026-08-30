@@ -5,6 +5,7 @@ import type { Tile, TileState, Token } from '../game/types';
 type KeyboardProps = {
     guesses: Tile[][];
     onTokenClick: (token: Token) => void;
+    onDelete: () => void;
 };
 
 const STATE_PRIORITY: Record<
@@ -49,6 +50,7 @@ function getBestTileState(
 export function Keyboard({
     guesses,
     onTokenClick,
+    onDelete,
 }: KeyboardProps) {
     return (
         <div className="keyboard">
@@ -70,6 +72,13 @@ export function Keyboard({
                     </button>
                 );
             })}
+
+            <button
+                className="keyboard-key"
+                onClick={onDelete}
+            >
+                ⌫
+            </button>
         </div>
     );
 }
