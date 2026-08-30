@@ -1,11 +1,16 @@
 .keyboard {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     gap: 8px;
 
-    max-width: 620px;
     margin: 24px auto;
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
 }
 
 .keyboard-key {
@@ -27,6 +32,10 @@
     font-weight: 700;
 
     cursor: pointer;
+}
+
+.keyboard-action-key {
+    min-width: 110px;
 }
 
 .keyboard-key-correct {

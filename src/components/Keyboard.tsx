@@ -1,5 +1,4 @@
 import './Keyboard.css';
-import { ALLOWED_TOKENS } from '../game/types';
 import type { Tile, TileState, Token } from '../game/types';
 
 type KeyboardProps = {
@@ -8,6 +7,30 @@ type KeyboardProps = {
     onDelete: () => void;
     onSubmit: () => void;
 };
+
+const DIGIT_KEYS: Token[] = [
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+];
+
+const OPERATOR_KEYS: Token[] = [
+    '+',
+    '-',
+    '*',
+    '/',
+    '^2',
+    '(',
+    ')',
+    '=',
+];
 
 const STATE_PRIORITY: Record<
     Exclude<TileState, 'empty'>,
@@ -48,6 +71,28 @@ function getBestTileState(
     return bestState;
 }
 
+function renderTokenKey(
+    token: Token,
+    guesses: Tile[][],
+    onTokenClick: (token: Token) => void
+) {
+    const state = getBestTileState(guesses, token);
+
+    return (
+        <button
+            key={token}
+            className={
+                state
+                    ? `keyboard-key keyboard-key-${state}`
+                    : 'keyboard-key'
+            }
+            onClick={() => onTokenClick(token)}
+        >
+            {token}
+        </button>
+    );
+}
+
 export function Keyboard({
     guesses,
     onTokenClick,
@@ -56,38 +101,41 @@ export function Keyboard({
 }: KeyboardProps) {
     return (
         <div className="keyboard">
-            {ALLOWED_TOKENS.map((token) => {
-                const state =
-                    getBestTileState(guesses, token);
+            <div className="keyboard-row">
+                {DIGIT_KEYS.map((token) =>
+                    renderTokenKey(
+                        token,
+                        guesses,
+                        onTokenClick
+                    )
+                )}
+            </div>
 
-                return (
-                    <button
-                        key={token}
-                        className={
-                            state
-                                ? `keyboard-key keyboard-key-${state}`
-                                : 'keyboard-key'
-                        }
-                        onClick={() => onTokenClick(token)}
-                    >
-                        {token}
-                    </button>
-                );
-            })}
+            <div className="keyboard-row">
+                {OPERATOR_KEYS.map((token) =>
+                    renderTokenKey(
+                        token,
+                        guesses,
+                        onTokenClick
+                    )
+                )}
+            </div>
 
-            <button
-                className="keyboard-key"
-                onClick={onDelete}
-            >
-                ⌫
-            </button>
+            <div className="keyboard-row">
+                <button
+                    className="keyboard-key keyboard-action-key"
+                    onClick={onDelete}
+                >
+                    ⌫
+                </button>
 
-            <button
-                className="keyboard-key"
-                onClick={onSubmit}
-            >
-                Enter
-            </button>
+                <button
+                    className="keyboard-key keyboard-action-key"
+                    onClick={onSubmit}
+                >
+                    Enter
+                </button>
+            </div>
         </div>
     );
 }
