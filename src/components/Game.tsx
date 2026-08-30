@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import './Game.css';
 import { getRandomEquation } from '../game/equations';
@@ -18,6 +18,17 @@ export function Game() {
 
     const [currentGuess, setCurrentGuess] = useState<Token[]>([]);
     const [errorMessage, setErrorMessage] = useState('');
+
+    const gameStateRef = useRef(gameState);
+    const currentGuessRef = useRef(currentGuess);
+
+    useEffect(() => {
+        gameStateRef.current = gameState;
+    }, [gameState]);
+
+    useEffect(() => {
+        currentGuessRef.current = currentGuess;
+    }, [currentGuess]);
 
     function handleTokenClick(token: Token) {
         setCurrentGuess((guess) => {
@@ -64,25 +75,53 @@ export function Game() {
 
     useEffect(() => {
         function handleKeyDown(event: KeyboardEvent) {
-            if (gameState.status !== 'playing') {
+            if (gameStateRef.current.status !== 'playing') {
                 return;
             }
 
             if (event.key === 'Backspace') {
                 event.preventDefault();
-                handleDelete();
+
+                setCurrentGuess((guess) =>
+                    guess.slice(0, -1)
+                );
+
                 return;
             }
 
             if (event.key === 'Enter') {
                 event.preventDefault();
-                handleSubmit();
+
+                const result = submitGuess(
+                    gameStateRef.current,
+                    currentGuessRef.current
+                );
+
+                if (result.isValid) {
+                    setGameState(result.state);
+                    setCurrentGuess([]);
+                    setErrorMessage('');
+                } else {
+                    setErrorMessage(result.reason);
+                }
+
                 return;
             }
 
             if (event.key === '^') {
                 event.preventDefault();
-                handleTokenClick('^2');
+
+                setCurrentGuess((guess) => {
+                    if (guess.length >= EQUATION_LENGTH) {
+                        return guess;
+                    }
+
+                    return [
+                        ...guess,
+                        '^2',
+                    ];
+                });
+
                 return;
             }
 
@@ -90,7 +129,17 @@ export function Game() {
 
             if (ALLOWED_TOKENS.includes(token)) {
                 event.preventDefault();
-                handleTokenClick(token);
+
+                setCurrentGuess((guess) => {
+                    if (guess.length >= EQUATION_LENGTH) {
+                        return guess;
+                    }
+
+                    return [
+                        ...guess,
+                        token,
+                    ];
+                });
             }
         }
 
@@ -105,7 +154,7 @@ export function Game() {
                 handleKeyDown
             );
         };
-    }, [gameState, currentGuess]);
+    }, []);
 
     return (
         <div className="game">
