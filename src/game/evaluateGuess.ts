@@ -11,7 +11,7 @@ import type { Tile, Token } from './types';
  */
 export function evaluateGuess(secret: Token[], guess: Token[]): Tile[] {
 
-    // ===== Initialize result =====
+    // Initialize result 
 
     const tiles: Tile[] = guess.map((token) => ({
         value: token,
@@ -22,7 +22,7 @@ export function evaluateGuess(secret: Token[], guess: Token[]): Tile[] {
         secret.map(() => false);
 
 
-    // ===== First pass: correct tokens =====
+    // First pass: correct tokens 
 
     guess.forEach((token, index) => {
         if (secret[index] === token) {
@@ -32,7 +32,7 @@ export function evaluateGuess(secret: Token[], guess: Token[]): Tile[] {
     });
 
 
-    // ===== Second pass: present tokens =====
+    // Second pass: present tokens 
 
     guess.forEach((token, guessIndex) => {
 
@@ -50,9 +50,6 @@ export function evaluateGuess(secret: Token[], guess: Token[]): Tile[] {
             usedSecretTokens[matchingSecretIndex] = true;
         }
     });
-
-
-    // ===== Return result =====
 
     return tiles;
 }
