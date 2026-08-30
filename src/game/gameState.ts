@@ -24,7 +24,7 @@ import type { GameStatus, Tile, Token } from './types';
 import { validateEquation } from './validateEquation';
 import { evaluateGuess } from './evaluateGuess';
 
-const MAX_GUESSES = 6;
+export const MAX_GUESSES = 6;
 
 /**
  * Represents the complete logical state of one Equadle game.
