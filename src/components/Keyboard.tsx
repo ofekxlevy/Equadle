@@ -1,13 +1,11 @@
 import './Keyboard.css';
 import type { Tile, TileState, Token } from '../game/types';
-
 type KeyboardProps = {
     guesses: Tile[][];
     onTokenClick: (token: Token) => void;
     onDelete: () => void;
     onSubmit: () => void;
 };
-
 const DIGIT_KEYS: Token[] = [
     '0',
     '1',
@@ -20,7 +18,6 @@ const DIGIT_KEYS: Token[] = [
     '8',
     '9',
 ];
-
 const OPERATOR_KEYS: Token[] = [
     '+',
     '-',
@@ -31,7 +28,6 @@ const OPERATOR_KEYS: Token[] = [
     ')',
     '=',
 ];
-
 const STATE_PRIORITY: Record<
     Exclude<TileState, 'empty'>,
     number
@@ -40,7 +36,6 @@ const STATE_PRIORITY: Record<
     present: 2,
     correct: 3,
 };
-
 function getBestTileState(
     guesses: Tile[][],
     token: Token
@@ -48,7 +43,6 @@ function getBestTileState(
     let bestState:
         | Exclude<TileState, 'empty'>
         | undefined;
-
     guesses.forEach((guess) => {
         guess.forEach((tile) => {
             if (
@@ -57,7 +51,6 @@ function getBestTileState(
             ) {
                 return;
             }
-
             if (
                 bestState === undefined ||
                 STATE_PRIORITY[tile.state] >
@@ -67,17 +60,14 @@ function getBestTileState(
             }
         });
     });
-
     return bestState;
 }
-
 function renderTokenKey(
     token: Token,
     guesses: Tile[][],
     onTokenClick: (token: Token) => void
 ) {
     const state = getBestTileState(guesses, token);
-
     return (
         <button
             key={token}
@@ -93,13 +83,16 @@ function renderTokenKey(
                     <span>x</span>
                     <sup>2</sup>
                 </span>
+            ) : token === '*' ? (
+                '·'
+            ) : token === '/' ? (
+                <span className="division-symbol">/</span>
             ) : (
                 token
             )}
         </button>
     );
 }
-
 export function Keyboard({
     guesses,
     onTokenClick,
@@ -117,7 +110,6 @@ export function Keyboard({
                     )
                 )}
             </div>
-
             <div className="keyboard-row">
                 {OPERATOR_KEYS.map((token) =>
                     renderTokenKey(
@@ -127,7 +119,6 @@ export function Keyboard({
                     )
                 )}
             </div>
-
             <div className="keyboard-row">
                 <button
                     className="keyboard-key keyboard-action-key"
@@ -135,7 +126,6 @@ export function Keyboard({
                 >
                     ⌫
                 </button>
-
                 <button
                     className="keyboard-key keyboard-action-key"
                     onClick={onSubmit}

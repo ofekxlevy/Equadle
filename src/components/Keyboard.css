@@ -69,3 +69,8 @@
     font-size: 0.55em;
     line-height: 1;
 }
+
+.division-symbol {
+    display: inline-block;
+    transform: skewX(-12deg);
+}

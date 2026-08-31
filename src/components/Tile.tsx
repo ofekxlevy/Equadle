@@ -10,6 +10,10 @@ export function Tile({ tile }: TileProps) {
         <span className={`tile tile-${tile.state}`}>
             {tile.value === '^2' ? (
                 <sup className="tile-square">2</sup>
+            ) : tile.value === '*' ? (
+                '·'
+            ) : tile.value === '/' ? (
+                <span className="division-symbol">/</span>
             ) : (
                 tile.value
             )}
