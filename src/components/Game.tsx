@@ -72,7 +72,6 @@ export function Game() {
 
         setCurrentGuess([]);
         setErrorMessage('');
-        setShowRules(true);
     }
 
     useEffect(() => {
@@ -166,6 +165,13 @@ export function Game() {
             <h1 className="game-title">
                 Equadle
             </h1>
+
+            <button
+                className="how-to-play-button"
+                onClick={() => setShowRules(true)}
+            >
+             💡 How to Play  
+            </button>
 
             {showRules && (
                 <div className="rules-overlay">

@@ -129,3 +129,25 @@
 .rules-start-button:hover {
     background-color: #333;
 }
+
+.how-to-play-button {
+    min-width: 140px;
+    height: 44px;
+    margin: 0 0 20px;
+    padding: 0 20px;
+
+    border: 2px solid #888;
+    border-radius: 6px;
+
+    background-color: white;
+    color: black;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.how-to-play-button:hover {
+    background-color: #f2f2f2;
+}
