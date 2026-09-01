@@ -36,3 +36,20 @@
     display: inline-block;
     transform: skewX(-12deg);
 }
+
+@media (max-width: 600px) {
+    .tile {
+        width: clamp(28px, 8.2vw, 38px);
+        height: clamp(28px, 8.2vw, 38px);
+        margin: 1px;
+
+        border-width: 1.5px;
+
+        font-size: clamp(16px, 5vw, 21px);
+    }
+
+    .tile-square {
+        top: -0.3em;
+        font-size: 0.58em;
+    }
+}
